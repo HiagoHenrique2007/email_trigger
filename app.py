@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel, EmailStr
-
+from utils.email_sender import sendMail
 
 app = FastAPI(debug=True)
 class EmailRequest(BaseModel):
@@ -13,6 +13,7 @@ def root():
   return { 'ping': 'pong' }
 
 @app.post('/sendmail')
-def handleSendMail(email_request: EmailRequest):
-  pass
+async def handleSendMail(email_request: EmailRequest):
+  await sendMail(email=email_request.email, subject=email_request.subject, body=email_request.body)
+  return { 'message': 'Email enviado!' }
 
